@@ -100,6 +100,27 @@ void Todos(int n, aluno turma[n])
         }
     }
 }
+void BubbleArray(int n,aluno turma[n])
+{
+    int i, j;
+    aluno temp;
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) 
+        {
+            if (strcmp(turma[i].nome, turma[j].nome) == 0) 
+            {
+                if(turma[i].nota < turma[j].nota)
+                {
+                    temp = turma[i];
+                    turma[i] = turma[j];
+                    turma[j] = temp;
+                }
+            }
+         }
+    }
+
+}
 
 
 int main()
@@ -161,6 +182,7 @@ int main()
         }
     }
     bubbleSortNome(n,turma);
+    BubbleArray(n,turma);
     erro_escolha:
     printf("Deseja buscar por nome ou ver todos os alunos cadastrados? (1 para nome, 2 para todos): ");
     int opcao;
