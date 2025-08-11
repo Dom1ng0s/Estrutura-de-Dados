@@ -95,6 +95,48 @@ void mostrarContatos(Contato *contatos, int numContatos) {
 }
 }
 
+void mostrarContatosApagados(Contato *contatos, int numContatos) {
+    if (numContatos == 0) {
+        printf("Nenhum contato recém apagado1.\n");
+        return;
+    }
+
+    Contato contatosApagadosCopia[100];
+    int contagemApagados = 0;
+    for (int i = 0; i < numContatos; i++) {
+        if (contatos[i].Deletado) {
+            contatosApagadosCopia[contagemApagados] = contatos[i];
+            contagemApagados++;
+        }
+    }
+
+    if (contagemApagados == 0) {
+        printf("Nenhum contato recém apagado para exibir.\n");
+        return;
+    }
+
+    qsort(contatosApagadosCopia, contagemApagados, sizeof(Contato), compararContatos);
+
+    printf("\nLista de Contatos Recém Apagados:\n");
+    for (int i = 0; i < contagemApagados; i++) {
+        if(i == 0)
+        {
+        printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
+               i + 1, contatosApagadosCopia[i].nome, contatosApagadosCopia[i].sobrenome,
+               contatosApagadosCopia[i].telefone, contatosApagadosCopia[i].telefone_residencial,
+               contatosApagadosCopia[i].telefone_celular);
+        }
+        else
+        {
+            printf("----------------------------------------\n");
+            printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
+            i + 1, contatosApagadosCopia[i].nome, contatosApagadosCopia[i].sobrenome,
+            contatosApagadosCopia[i].telefone, contatosApagadosCopia[i].telefone_residencial,
+            contatosApagadosCopia[i].telefone_celular);
+    }
+}
+}
+
 void salvarContatosNoArquivo(const Contato contatos[], int numContatos) {
     FILE *arquivo = fopen("AgendaDaRoberta.txt", "w");
     if (arquivo == NULL) {
@@ -248,6 +290,15 @@ int main() {
         switch (opcao) {
             case 1:
                 mostrarContatos(contatos, numContatos);
+                printf("Mostrar contatos recém apagados? \n 1-Sim 2-Nao\n");
+                int apagado;
+                scanf(" %d",&apagado);
+                while ((c = getchar()) != '\n' && c != EOF);
+                if(apagado == 1)
+                {
+                    mostrarContatosApagados(contatos,numContatos);
+                }
+
                 break;
             case 2:
                 adicionarContato(contatos, &numContatos);
