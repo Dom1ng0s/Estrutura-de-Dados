@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 typedef struct {
     char nome[20];
@@ -25,6 +26,24 @@ void exibirMenu() {
     printf("3. Apagar Contato\n");
     printf("0. Sair\n");
     printf("----------------------------------------\n");
+}
+
+bool ehnumero(char *str) {
+    if (str == NULL || str[0] == '\0') {
+        return false;
+    }
+
+    bool encontrouDigito = false;
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (isdigit(str[i])) {
+            encontrouDigito = true;
+        } else if (!isspace(str[i])) {
+            return false;
+        }
+    }
+
+    return encontrouDigito;
 }
 
 int compararContatos(const void *a, const void *b) {
@@ -122,8 +141,7 @@ void adicionarContato(Contato contatos[], int *numContatos) {
     Contato novoContato;
     novoContato.Deletado = false;
 
-    // A LINHA PROBLEMÁTICA FOI REMOVIDA DAQUI.
-    // A limpeza agora é responsabilidade apenas da função main.
+
 
     printf("Nome: ");
     fgets(novoContato.nome, sizeof(novoContato.nome), stdin);
@@ -133,17 +151,35 @@ void adicionarContato(Contato contatos[], int *numContatos) {
     fgets(novoContato.sobrenome, sizeof(novoContato.sobrenome), stdin);
     novoContato.sobrenome[strcspn(novoContato.sobrenome, "\n")] = '\0';
 
+    erro_telefone:
     printf("Telefone: ");
     fgets(novoContato.telefone, sizeof(novoContato.telefone), stdin);
     novoContato.telefone[strcspn(novoContato.telefone, "\n")] = '\0';
+    if(ehnumero(novoContato.telefone) == false)
+    {
+        printf("Telefone invalido! Por favor, digite apenas numeros.\n");
+        goto erro_telefone;
+    }
 
+    erro_telefoneR:
     printf("Telefone Residencial: ");
     fgets(novoContato.telefone_residencial, sizeof(novoContato.telefone_residencial), stdin);
     novoContato.telefone_residencial[strcspn(novoContato.telefone_residencial, "\n")] = '\0';
+    if(ehnumero(novoContato.telefone_residencial) == false)
+    {
+        printf("Telefone Residencial invalido! Por favor, digite apenas numeros.\n");
+        goto erro_telefoneR;
+    }
 
+    erro_telefoneC:
     printf("Telefone Celular: ");
     fgets(novoContato.telefone_celular, sizeof(novoContato.telefone_celular), stdin);
     novoContato.telefone_celular[strcspn(novoContato.telefone_celular, "\n")] = '\0';
+    if(ehnumero(novoContato.telefone_celular) == false)
+    {
+        printf("Telefone Celular invalido! Por favor, digite apenas numeros.\n");
+        goto erro_telefoneC;
+    }
 
     contatos[*numContatos] = novoContato;
     (*numContatos)++;
