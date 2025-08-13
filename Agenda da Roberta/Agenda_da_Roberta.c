@@ -119,10 +119,13 @@ void BuscaContatos(Contato *contatos, int numContatos)
     {
         case 1:
         BuscaPorNome(contatos,numContatos);
+        break;
         case 2:
         BuscaNomeCompleto(contatos,numContatos);
+        break;
         case 3:
-        // busca por indice
+        BuscaPorIndice(contatos,numContatos);
+        break;
         case 0:
         printf("Saindo do menu de busca, pressione enter para continuar");
         getchar();
@@ -146,33 +149,36 @@ void BuscaPorNome(Contato *contatos, int numContatos)
             contatos_alvoCopia[contagem_alvo] = contatos[i];
             contagem_alvo++;
         }
-        if(contagem_alvo == 0)
+    }
+    if(contagem_alvo == 0)
         {
             printf("Nenhum contato com esse nome");
             return;
         }
-        qsort(contatos_alvoCopia, contagem_alvo, sizeof(Contato), compararContatos);
-        printf("\nLista de Contatos com o nome:%s\n",contatos_alvoCopia[0]);
-        for (int i = 0; i < contagem_alvo; i++) 
+    
+    qsort(contatos_alvoCopia, contagem_alvo, sizeof(Contato), compararContatos);
+    printf("\nResultados da busca por '%s':\n", nome_alvo);       
+    for (int i = 0; i < contagem_alvo; i++) 
+    {
+        if(i == 0)
         {
-            if(i == 0)
-            {
+        printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
+            i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
+            contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
+            contatos_alvoCopia[i].telefone_celular);
+        }
+        else
+        {
+            printf("----------------------------------------\n");
             printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
-                i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
-                contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
-                contatos_alvoCopia[i].telefone_celular);
-            }
-            else
-            {
-                printf("----------------------------------------\n");
-                printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
-                i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
-                contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
-                contatos_alvoCopia[i].telefone_celular);
-            }
+            i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
+            contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
+            contatos_alvoCopia[i].telefone_celular);
         }
     }
-}
+    }
+
+
 
 void BuscaNomeCompleto(Contato *contatos, int numContatos)
 {
@@ -192,31 +198,90 @@ void BuscaNomeCompleto(Contato *contatos, int numContatos)
             contatos_alvoCopia[contagem_alvo] = contatos[i];
             contagem_alvo++;
         }
-        if(contagem_alvo == 0)
+    }
+    if(contagem_alvo == 0)
         {
             printf("Nenhum contato com esse nome e sobrenome");
             return;
         }
-        qsort(contatos_alvoCopia, contagem_alvo, sizeof(Contato), compararContatos);
-        printf("\nLista de Contatos com o nome e sobrenome deseejados\n");
-        for (int i = 0; i < contagem_alvo; i++) 
+    
+       
+    qsort(contatos_alvoCopia, contagem_alvo, sizeof(Contato), compararContatos);
+    printf("\nLista de Contatos com o nome e sobrenome deseejados\n");
+    for (int i = 0; i < contagem_alvo; i++) 
+    {
+        if(i == 0)
         {
-            if(i == 0)
-            {
-            printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
-                i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
-                contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
-                contatos_alvoCopia[i].telefone_celular);
-            }
-            else
-            {
-                printf("----------------------------------------\n");
-                printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
-                i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
-                contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
-                contatos_alvoCopia[i].telefone_celular);
-            }
+        printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
+            i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
+            contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
+            contatos_alvoCopia[i].telefone_celular);
         }
+        else
+        {
+            printf("----------------------------------------\n");
+            printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
+            i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
+            contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
+            contatos_alvoCopia[i].telefone_celular);
+        }
+    }
+    
+}
+
+void BuscaPorIndice(Contato *contatos, int numContatos)
+{
+    printf("\n--- Busca por Indice ---\n");
+    if (numContatos == 0) 
+    {
+        printf("Nenhum contato cadastrado.\n");
+        return;
+    }
+
+    int contatosAtivosIndices[100];
+    int contagemAtivos = 0;
+
+    printf("Lista de Contatos Ativos:\n");
+    
+    for (int i = 0; i < numContatos; i++) 
+    {
+        if (!contatos[i].Deletado) 
+        {
+            printf("%d. %s %s\n", contagemAtivos + 1, contatos[i].nome, contatos[i].sobrenome);
+            contatosAtivosIndices[contagemAtivos] = i;
+            contagemAtivos++;
+        }
+    }
+
+    if (contagemAtivos == 0)
+     {
+        printf("Nenhum contato ativo para buscar.\n");
+        return;
+    }
+
+    int escolha;
+    printf("\nDigite o numero do contato que deseja ver (ou 0 para cancelar): ");
+    scanf("%d", &escolha);
+    limpar_buffer_entrada();
+
+    if (escolha > 0 && escolha <= contagemAtivos) 
+    {
+        int indiceOriginal = contatosAtivosIndices[escolha - 1];
+        
+        printf("\nDetalhes do Contato Selecionado:\n");
+        printf("Nome: %s %s\n", contatos[indiceOriginal].nome, contatos[indiceOriginal].sobrenome);
+        printf("- Telefone: %s\n", contatos[indiceOriginal].telefone);
+        printf("- Residencial: %s\n", contatos[indiceOriginal].telefone_residencial);
+        printf("- Celular: %s\n", contatos[indiceOriginal].telefone_celular);
+
+    } 
+    else if (escolha == 0) 
+    {
+        printf("Operacao cancelada.\n");
+    } 
+    else
+     {
+        printf("Opcao invalida.\n");
     }
 }
 
@@ -433,6 +498,7 @@ int main() {
                 break;
             case 4:
                 BuscaContatos(contatos,numContatos);
+                break;
             case 0:
                 printf("Saindo do programa... Ate logo!\n");
                 break;
