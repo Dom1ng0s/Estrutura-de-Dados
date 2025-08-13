@@ -118,9 +118,9 @@ void BuscaContatos(Contato *contatos, int numContatos)
     switch(i)
     {
         case 1:
-        // busca por nome
+        BuscaPorNome(contatos,numContatos);
         case 2:
-        // busca por sobrenome 
+        BuscaNomeCompleto(contatos,numContatos);
         case 3:
         // busca por indice
         case 0:
@@ -138,6 +138,8 @@ void BuscaPorNome(Contato *contatos, int numContatos)
     char nome_alvo[20];
     Contato contatos_alvoCopia[100];
     int contagem_alvo = 0;
+    fgets(nome_alvo, sizeof(nome_alvo), stdin);
+    nome_alvo[strcspn(nome_alvo, "\n")] = '\0';
     for(int i = 0; i < numContatos; i++){
         if(strcmp(nome_alvo,contatos[i].nome) == 0)
         {
@@ -151,6 +153,52 @@ void BuscaPorNome(Contato *contatos, int numContatos)
         }
         qsort(contatos_alvoCopia, contagem_alvo, sizeof(Contato), compararContatos);
         printf("\nLista de Contatos com o nome:%s\n",contatos_alvoCopia[0]);
+        for (int i = 0; i < contagem_alvo; i++) 
+        {
+            if(i == 0)
+            {
+            printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
+                i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
+                contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
+                contatos_alvoCopia[i].telefone_celular);
+            }
+            else
+            {
+                printf("----------------------------------------\n");
+                printf("%d. %s %s \n -Telefone: %s\n -Residencial: %s\n -Celular: %s\n",
+                i + 1, contatos_alvoCopia[i].nome, contatos_alvoCopia[i].sobrenome,
+                contatos_alvoCopia[i].telefone, contatos_alvoCopia[i].telefone_residencial,
+                contatos_alvoCopia[i].telefone_celular);
+            }
+        }
+    }
+}
+
+void BuscaNomeCompleto(Contato *contatos, int numContatos)
+{
+    printf("Busca por nome e sobrenome selecionada:\nInsira aqui o Nome do contato que voce deseja buscar:");
+    char nome_alvo[20];
+    Contato contatos_alvoCopia[100];
+    int contagem_alvo = 0;
+    char sobrenome_alvo[30];
+    fgets(nome_alvo, sizeof(nome_alvo), stdin);
+    nome_alvo[strcspn(nome_alvo, "\n")] = '\0';
+    printf("\nInsira aqui o sobrenome do contato desejado:");
+    fgets(sobrenome_alvo, sizeof(sobrenome_alvo), stdin);
+    sobrenome_alvo[strcspn(sobrenome_alvo, "\n")] = '\0';
+    for(int i = 0; i < numContatos; i++){
+        if(strcmp(nome_alvo,contatos[i].nome) == 0 && strcmp(sobrenome_alvo,contatos[i].sobrenome)==0)
+        {
+            contatos_alvoCopia[contagem_alvo] = contatos[i];
+            contagem_alvo++;
+        }
+        if(contagem_alvo == 0)
+        {
+            printf("Nenhum contato com esse nome e sobrenome");
+            return;
+        }
+        qsort(contatos_alvoCopia, contagem_alvo, sizeof(Contato), compararContatos);
+        printf("\nLista de Contatos com o nome e sobrenome deseejados\n");
         for (int i = 0; i < contagem_alvo; i++) 
         {
             if(i == 0)
