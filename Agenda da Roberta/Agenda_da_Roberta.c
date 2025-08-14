@@ -141,7 +141,7 @@ void BuscaContatos(Contato *contatos, int numContatos)
         getchar();
         return;
     }
-    }while(i > 0 || i == 4);
+    }while(i != 0);
 }
 
 
@@ -283,6 +283,7 @@ void BuscaPorIndice(Contato *contatos, int numContatos)
         printf("- Telefone: %s\n", contatos[indiceOriginal].telefone);
         printf("- Residencial: %s\n", contatos[indiceOriginal].telefone_residencial);
         printf("- Celular: %s\n", contatos[indiceOriginal].telefone_celular);
+        printf("--------------------------------\n");
 
     }
     else if (escolha == 0)
@@ -534,7 +535,7 @@ int main() {
             case 1:
                 mostrarContatos(contatos, numContatos);
                 erro_apagado:
-                printf("Mostrar contatos recem apagados? \n 1-Sim 2-Nao\n");
+                printf("Mostrar contatos recem apagados?\n1-Sim 2-Nao\n");
                 int apagado;
                 
                 char buffer_apagado[10];
