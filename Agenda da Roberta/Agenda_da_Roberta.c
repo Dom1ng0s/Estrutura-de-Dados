@@ -118,8 +118,13 @@ void BuscaContatos(Contato *contatos, int numContatos)
     printf("3 - Busca por indice\n");
     printf("0- Sair\n");
     printf("Digite aqui a opcao correspondente: ");
-    scanf("%d",&i);
-    limpar_buffer_entrada();
+    
+    char buffer_busca[10];
+    if (fgets(buffer_busca, sizeof(buffer_busca), stdin) != NULL) {
+        if (sscanf(buffer_busca, "%d", &i) != 1) {
+            i = -1; 
+        }
+    }
     switch(i)
     {
         case 1:
@@ -381,14 +386,24 @@ void adicionarContato(Contato contatos[], int *numContatos) {
     novoContato.Deletado = false;
 
 
-
+    erro_nome:
     printf("Nome: ");
     fgets(novoContato.nome, sizeof(novoContato.nome), stdin);
     novoContato.nome[strcspn(novoContato.nome, "\n")] = '\0';
+    if (novoContato.nome[0] == '\0') {
+    printf("O campo 'Nome' é obrigatório. Operação cancelada.\n");
+    goto erro_nome;   
+    }
 
+    erro_sobrenome:
     printf("Sobrenome: ");
     fgets(novoContato.sobrenome, sizeof(novoContato.sobrenome), stdin);
     novoContato.sobrenome[strcspn(novoContato.sobrenome, "\n")] = '\0';
+    if (novoContato.sobrenome[0] == '\0') 
+    {
+        printf("O campo 'Sobrenome' é obrigatório. Operação cancelada.\n");
+        goto erro_sobrenome; 
+    }
 
     erro_telefone:
     printf("Telefone: ");
@@ -398,6 +413,11 @@ void adicionarContato(Contato contatos[], int *numContatos) {
     {
         printf("Telefone invalido! Por favor, digite apenas numeros.\n");
         goto erro_telefone;
+    }
+    if (novoContato.telefone[0] == '\0') 
+    {
+        printf("O campo 'Telefone' é obrigatório. Operação cancelada.\n");
+        goto erro_telefone; 
     }
 
     erro_telefoneR:
@@ -409,6 +429,11 @@ void adicionarContato(Contato contatos[], int *numContatos) {
         printf("Telefone Residencial invalido! Por favor, digite apenas numeros.\n");
         goto erro_telefoneR;
     }
+    if (novoContato.telefone_residencial[0] == '\0') 
+    {
+        printf("O campo 'Telefone Residencial' é obrigatório. Operação cancelada.\n");
+        goto erro_telefoneR; 
+    }
 
     erro_telefoneC:
     printf("Telefone Celular: ");
@@ -419,6 +444,11 @@ void adicionarContato(Contato contatos[], int *numContatos) {
         printf("Telefone Celular invalido! Por favor, digite apenas numeros.\n");
         goto erro_telefoneC;
     }
+    if (novoContato.telefone_celular[0] == '\0') 
+    {
+        printf("O campo 'Telefone Celular' é obrigatório. Operação cancelada.\n");
+        goto erro_telefoneC; 
+    }
 
     contatos[*numContatos] = novoContato;
     (*numContatos)++;
@@ -428,7 +458,8 @@ void adicionarContato(Contato contatos[], int *numContatos) {
 }
 
 void apagarContato(Contato contatos[], int numContatos) {
-    if (numContatos == 0) {
+    if (numContatos == 0) 
+    {
         printf("Nenhum contato para apagar.\n");
         return;
     }
@@ -458,12 +489,26 @@ void apagarContato(Contato contatos[], int numContatos) {
 
     if (escolha > 0 && escolha <= count) {
         int indiceOriginal = contatosAtivosIndices[escolha - 1];
-        contatos[indiceOriginal].Deletado = true;
-        salvarContatosNoArquivo(contatos, numContatos);
-        printf("Contato apagado com sucesso!\n");
-    } else if (escolha == 0) {
+        char confirmacao;
+
+        printf("Você tem certeza que deseja apagar %s %s? (S/N): ",
+            contatos[indiceOriginal].nome, contatos[indiceOriginal].sobrenome);
+
+        scanf(" %c", &confirmacao);
+        limpar_buffer_entrada();
+
+        if (toupper(confirmacao) == 'S') {
+            contatos[indiceOriginal].Deletado = true;
+            salvarContatosNoArquivo(contatos, numContatos);
+            printf("Contato apagado com sucesso!\n");
+        } else {
+            printf("Operação de apagar cancelada.\n");
+        }
+    }
+    else if (escolha == 0) {
         printf("Operacao cancelada.\n");
-    } else {
+    } 
+    else {
         printf("Opcao invalida.\n");
     }
 }
@@ -478,17 +523,31 @@ int main() {
     do {
         exibirMenu();
         printf("\nEscolha uma opcao: ");
-        scanf("%d", &opcao);
-
-        limpar_buffer_entrada();
+        char buffer_opcao[10];
+        if (fgets(buffer_opcao, sizeof(buffer_opcao), stdin) != NULL) {
+            if (sscanf(buffer_opcao, "%d", &opcao) != 1) {
+                opcao = -1; 
+            }
+        }
 
         switch (opcao) {
             case 1:
                 mostrarContatos(contatos, numContatos);
-                printf("Mostrar contatos recém apagados? \n 1-Sim 2-Nao\n");
+                erro_apagado:
+                printf("Mostrar contatos recem apagados? \n 1-Sim 2-Nao\n");
                 int apagado;
-                scanf(" %d",&apagado);
-                limpar_buffer_entrada();
+                
+                char buffer_apagado[10];
+                if (fgets(buffer_apagado, sizeof(buffer_apagado), stdin) != NULL) {
+                    if (sscanf(buffer_apagado, "%d", &apagado) != 1) {
+                        apagado = -1;
+                    }
+                }
+                if(apagado != 1 && apagado != 2)
+                {
+                    printf("Opcao invalida! Digite 1 ou 2.\n");
+                    goto erro_apagado;
+                }
                 if(apagado == 1)
                 {
                     mostrarContatosApagados(contatos,numContatos);
@@ -508,7 +567,7 @@ int main() {
                 printf("Saindo do programa... Ate logo!\n");
                 break;
             default:
-                printf("Opcao invalida! Tente novamente.\n");
+                printf("Opcao invalida! Digite um numero de 0 a 4 .\n");
                 break;
         }
 
